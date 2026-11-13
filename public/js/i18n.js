@@ -1,0 +1,207 @@
+// ANNPURNN i18n — English, Gujarati, Hindi.
+const I18N = {
+  en: {
+    tagline: 'Share food, share dignity',
+    nav_home: 'Home', nav_requests: 'Requests', nav_donations: 'Donate',
+    nav_safety: 'Safety', nav_me: 'Me',
+    hero_title: 'No one in Surat should sleep hungry.',
+    hero_sub: 'Free food sharing, always. Request or donate — with dignity and privacy.',
+    tile_request: 'Request Food', tile_request_sub: 'Free, always',
+    tile_donate: 'Donate Food', tile_donate_sub: 'Share your surplus',
+    tile_help: 'Help Someone Get Food', tile_help_sub: 'Request for another person',
+    tile_feed: 'Community Food Requests', tile_feed_sub: 'Donors: browse & accept',
+    tile_events: 'Food Events', tile_events_sub: 'Langars & food drives',
+    tile_offers: 'Restaurant Offers', tile_offers_sub: 'Sponsored ads',
+    tile_deals: 'Daily Deals', tile_deals_sub: 'Sponsored affiliate links',
+    login: 'Login / Sign up', logout: 'Logout',
+    phone: 'Mobile number', name: 'Your name', otp: '6-digit OTP',
+    get_otp: 'Get OTP', verify_otp: 'Verify & continue',
+    role_seekers: 'I need food', role_donors: 'I can give food', role_helpers: 'I help others',
+    request_new: 'Request Food', request_new_sub: 'This is completely free',
+    food_needed: 'What food do you need?', people: 'How many people?',
+    veg_pref: 'Food preference', veg: 'Vegetarian', nonveg: 'Non-vegetarian', any: 'Any',
+    area: 'Area in Surat', time: 'Preferred collection time',
+    urgency: 'Urgency note (optional)', access: 'Accessibility needs (optional)',
+    mode: 'Collection or delivery?', pickup: 'I will collect', pickup_or_delivery: 'Pickup, or delivery if a donor offers',
+    submit_request: 'Submit request', request_created: 'Request created. Donors nearby can now see it.',
+    exact_address: 'Exact address (shared only with the accepted donor)',
+    privacy_note: 'Your exact address and phone number are never shown publicly. They are shared only with the donor who accepts your request.',
+    feed_title: 'Community Food Requests', tab_seeker: 'Food seekers', tab_helper: 'By community helpers',
+    filter_area: 'Filter by area', filter_pref: 'Food preference', filter_people: 'Min people', apply: 'Apply',
+    accept: 'Accept Request', accept_confirm: 'Accept this request? You will be able to chat and share the exact address privately.',
+    accepted_by_you: 'You accepted this request.',
+    mark_ready: 'Mark Ready for Collection', mark_completed: 'Confirm Completion', cancel: 'Cancel request',
+    status_open: 'Open', status_accepted: 'Accepted', status_ready: 'Ready for collection',
+    status_completed: 'Completed', status_cancelled: 'Cancelled',
+    chat: 'Chat', collection_details: 'Collection details', report: 'Report', report_sent: 'Report submitted. Thank you.',
+    helper_new: 'Request Food for Someone',
+    beneficiary: 'Beneficiary\'s first name (optional)', anonymous: 'Keep beneficiary anonymous',
+    safe_point: 'Safe collection point (e.g. bus stop, community centre)',
+    supporting: 'Supporting information (optional)',
+    consent: 'I confirm this request is genuine and I have permission to submit it.',
+    photo_consent: 'I have informed consent for this photo (optional — photos are never required).',
+    helper_banner: 'Created by a community helper',
+    donate_new: 'Donate Food',
+    d_title: 'Title', d_desc: 'Describe the food', d_qty: 'Quantity', d_portions: 'Number of portions',
+    d_ingredients: 'Ingredients (optional)', d_allergens: 'Allergens (optional)',
+    d_storage: 'Storage conditions', d_prepared: 'Prepared at (date & time)', d_until: 'Safe collection deadline',
+    d_pickup: 'Pickup available', d_delivery: 'I can deliver (voluntary)', d_address: 'Exact pickup address (shared privately after matching)',
+    submit_donation: 'List this donation', donation_created: 'Donation listed. It will appear after the food-safety check.',
+    my_requests: 'My requests', my_donations: 'My donations', my_claims: 'Claims on my listings',
+    notifications: 'Notifications', no_notifications: 'No notifications yet.',
+    safety_title: 'Food Safety & Trust',
+    offers_title: 'Restaurant Offers', deals_title: 'Daily Deals',
+    ad_disclosure: 'Sponsored — not a food donation',
+    affiliate_disclosure: 'Sponsored affiliate links. ANNPURNN may earn a commission.',
+    free_forever: 'Requesting and collecting donated food is always free.',
+    login_required: 'Please login first.',
+    send: 'Send', type_message: 'Type a message…',
+    back: 'Back', lang_name: 'English'
+  },
+  gu: {
+    tagline: 'ખોરાક વહેંચો, ગરિમા વહેંચો',
+    nav_home: 'ઘર', nav_requests: 'વિનંતીઓ', nav_donations: 'દાન',
+    nav_safety: 'સુરક્ષા', nav_me: 'મારું',
+    hero_title: 'સુરતમાં કોઈ ભૂખ્યું સૂવું ન જોઈએ.',
+    hero_sub: 'મફત ખોરાક શેરિંગ, હંમેશા. માંગો અથવા દાન કરો — ગરિમા અને ગોપનીયતા સાથે.',
+    tile_request: 'ખોરાક માંગો', tile_request_sub: 'હંમેશા મફત',
+    tile_donate: 'ખોરાક દાન કરો', tile_donate_sub: 'તમારો વધારાનો ખોરાક વહેંચો',
+    tile_help: 'કોઈને ખોરાક અપાવવામાં મદદ કરો', tile_help_sub: 'બીજા માટે વિનંતી કરો',
+    tile_feed: 'કોમ્યુનિટી ખોરાક વિનંતીઓ', tile_feed_sub: 'દાતાઓ: જુઓ અને સ્વીકારો',
+    tile_events: 'ખોરાક કાર્યક્રમો', tile_events_sub: 'લંગર અને ફૂડ ડ્રાઈવ',
+    tile_offers: 'રેસ્ટોરન્ટ ઓફર', tile_offers_sub: 'પ્રાયોજિત જાહેરાત',
+    tile_deals: 'ડેઈલી ડીલ', tile_deals_sub: 'પ્રાયોજિત લિંક્સ',
+    login: 'લોગિન / નોંધણી', logout: 'લોગ આઉટ',
+    phone: 'મોબાઈલ નંબર', name: 'તમારું નામ', otp: '6 આંકડાનો OTP',
+    get_otp: 'OTP મેળવો', verify_otp: 'ચકાસો અને આગળ વધો',
+    role_seekers: 'મને ખોરાક જોઈએ છે', role_donors: 'હું ખોરાક આપી શકું છું', role_helpers: 'હું બીજાની મદદ કરું છું',
+    request_new: 'ખોરાક માંગો', request_new_sub: 'આ સંપૂર્ણ મફત છે',
+    food_needed: 'તમારે કયો ખોરાક જોઈએ છે?', people: 'કેટલા લોકો?',
+    veg_pref: 'ખોરાકની પસંદ', veg: 'શાકાહારી', nonveg: 'માંસાહારી', any: 'કોઈપણ',
+    area: 'સુરતમાં વિસ્તાર', time: 'પસંદગીનો સંગ્રહ સમય',
+    urgency: 'તાકીદની નોંધ (વૈકલ્પિક)', access: 'સુગમતા જરૂરિયાત (વૈકલ્પિક)',
+    mode: 'સંગ્રહ કે ડિલિવરી?', pickup: 'હું લેવા આવીશ', pickup_or_delivery: 'લેવા આવીશ, અથવા ડિલિવરી હોય તો',
+    submit_request: 'વિનંતી મોકલો', request_created: 'વિનંતી બની ગઈ. નજીકના દાતાઓ હવે જોઈ શકશે.',
+    exact_address: 'ચોક્કસ સરનામું (ફક્ત સ્વીકારનાર દાતા સાથે જ શેર થશે)',
+    privacy_note: 'તમારું ચોક્કસ સરનામું અને ફોન નંબર ક્યારેય જાહેરમાં બતાવવામાં નહીં આવે.',
+    feed_title: 'કોમ્યુનિટી ખોરાક વિનંતીઓ', tab_seeker: 'ખોરાક માંગનાર', tab_helper: 'કોમ્યુનિટી હેલ્પર દ્વારા',
+    filter_area: 'વિસ્તાર પ્રમાણે', filter_pref: 'ખોરાકની પસંદ', filter_people: 'ઓછામાં ઓછા લોકો', apply: 'લાગુ કરો',
+    accept: 'વિનંતી સ્વીકારો', accept_confirm: 'આ વિનંતી સ્વીકારવી છે? તમે ચેટ કરી શકશો અને સરનામું ખાનગીમાં જોઈ શકશો.',
+    accepted_by_you: 'તમે આ વિનંતી સ્વીકારી.',
+    mark_ready: 'લેવા માટે તૈયાર કરો', mark_completed: 'પૂર્ણ કરવાની પુષ્ટિ કરો', cancel: 'વિનંતી રદ કરો',
+    status_open: 'ખુલ્લી', status_accepted: 'સ્વીકૃત', status_ready: 'લેવા તૈયાર',
+    status_completed: 'પૂર્ણ', status_cancelled: 'રદ',
+    chat: 'ચેટ', collection_details: 'સંગ્રહ વિગતો', report: 'ફરિયાદ', report_sent: 'ફરિયાદ નોંધાઈ. આભાર.',
+    helper_new: 'કોઈક માટે ખોરાક માંગો',
+    beneficiary: 'લાભાર્થીનું પ્રથમ નામ (વૈકલ્પિક)', anonymous: 'લાભાર્થીને ગુમનામ રાખો',
+    safe_point: 'સુરક્ષિત સંગ્રહ સ્થળ (દા.ત. બસ સ્ટોપ)',
+    supporting: 'વધારાની માહિતી (વૈકલ્પિક)',
+    consent: 'હું પુષ્ટિ કરું છું કે આ વિનંતી સાચી છે અને મને મંજૂરી છે.',
+    photo_consent: 'આ ફોટા માટે મેં સૂચિત સંમતિ લીધી છે (ફોટા ક્યારેય ફરજિયાત નથી).',
+    helper_banner: 'કોમ્યુનિટી હેલ્પર દ્વારા બનાવવામાં આવી',
+    donate_new: 'ખોરાક દાન કરો',
+    d_title: 'શીર્ષક', d_desc: 'ખોરાક વર્ણવો', d_qty: 'જથ્થો', d_portions: 'ભાગોની સંખ્યા',
+    d_ingredients: 'ઘટકો (વૈકલ્પિક)', d_allergens: 'એલર્જન (વૈકલ્પિક)',
+    d_storage: 'સંગ્રહ સ્થિતિ', d_prepared: 'બનાવ્યાનો સમય', d_until: 'સુરક્ષિત સંગ્રહ સમયમર્યાદા',
+    d_pickup: 'પિકપ ઉપલબ્ધ', d_delivery: 'હું ડિલિવરી કરી શકું (સ્વૈચ્છિક)', d_address: 'ચોક્કસ પિકપ સરનામું (મેચિંગ પછી ખાનગીમાં)',
+    submit_donation: 'દાન મૂકો', donation_created: 'દાન નોંધાયું. ખોરાક-સલામતી ચકાસણી પછી દેખાશે.',
+    my_requests: 'મારી વિનંતીઓ', my_donations: 'મારાં દાન', my_claims: 'મારી લિસ્ટિંગ પર દાવા',
+    notifications: 'સૂચનાઓ', no_notifications: 'હજી કોઈ સૂચના નથી.',
+    safety_title: 'ખોરાક સલામતી અને ભરોસો',
+    offers_title: 'રેસ્ટોરન્ટ ઓફર', deals_title: 'ડેઈલી ડીલ',
+    ad_disclosure: 'પ્રાયોજિત — ખોરાક દાન નથી',
+    affiliate_disclosure: 'પ્રાયોજિત એફિલિએટ લિંક્સ. ANNPURNN કમિશન મેળવી શકે છે.',
+    free_forever: 'દાનનો ખોરાક માંગવો અને લેવો હંમેશા મફત છે.',
+    login_required: 'પહેલા લોગિન કરો.',
+    send: 'મોકલો', type_message: 'સંદેશ લખો…',
+    back: 'પાછળ', lang_name: 'ગુજરાતી'
+  },
+  hi: {
+    tagline: 'खाना बाँटें, सम्मान बाँटें',
+    nav_home: 'होम', nav_requests: 'अनुरोध', nav_donations: 'दान',
+    nav_safety: 'सुरक्षा', nav_me: 'मैं',
+    hero_title: 'सूरत में कोई भूखा न सोए।',
+    hero_sub: 'मुफ़्त भोजन साझेदारी, हमेशा। माँगें या दान करें — सम्मान और गोपनीयता के साथ।',
+    tile_request: 'भोजन माँगें', tile_request_sub: 'हमेशा मुफ़्त',
+    tile_donate: 'भोजन दान करें', tile_donate_sub: 'अपना अतिरिक्त खाना बाँटें',
+    tile_help: 'किसी को भोजन दिलाएँ', tile_help_sub: 'दूसरे के लिए अनुरोध करें',
+    tile_feed: 'कम्युनिटी भोजन अनुरोध', tile_feed_sub: 'दाता: देखें और स्वीकारें',
+    tile_events: 'भोजन कार्यक्रम', tile_events_sub: 'लंगर और फूड ड्राइव',
+    tile_offers: 'रेस्टोरेंट ऑफर', tile_offers_sub: 'प्रायोजित विज्ञापन',
+    tile_deals: 'डेली डील', tile_deals_sub: 'प्रायोजित लिंक',
+    login: 'लॉगिन / साइन अप', logout: 'लॉग आउट',
+    phone: 'मोबाइल नंबर', name: 'आपका नाम', otp: '6 अंकों का OTP',
+    get_otp: 'OTP पाएँ', verify_otp: 'सत्यापित करें',
+    role_seekers: 'मुझे भोजन चाहिए', role_donors: 'मैं भोजन दे सकता हूँ', role_helpers: 'मैं दूसरों की मदद करता हूँ',
+    request_new: 'भोजन माँगें', request_new_sub: 'यह पूरी तरह मुफ़्त है',
+    food_needed: 'आपको कौन सा भोजन चाहिए?', people: 'कितने लोग?',
+    veg_pref: 'भोजन की पसंद', veg: 'शाकाहारी', nonveg: 'मांसाहारी', any: 'कोई भी',
+    area: 'सूरत में क्षेत्र', time: 'पसंदीदा संग्रह समय',
+    urgency: 'तत्कालता नोट (वैकल्पिक)', access: 'सुगम्यता ज़रूरतें (वैकल्पिक)',
+    mode: 'संग्रह या डिलीवरी?', pickup: 'मैं लेने आऊँगा', pickup_or_delivery: 'ले जाऊँगा, या डिलीवरी हो तो',
+    submit_request: 'अनुरोध भेजें', request_created: 'अनुरोध बन गया। दाता अब इसे देख सकते हैं।',
+    exact_address: 'सटीक पता (केवल स्वीकार करने वाले दाता से साझा)',
+    privacy_note: 'आपका सटीक पता और फ़ोन नंबर कभी सार्वजनिक नहीं दिखाया जाता।',
+    feed_title: 'कम्युनिटी भोजन अनुरोध', tab_seeker: 'भोजन माँगने वाले', tab_helper: 'कम्युनिटी हेल्पर द्वारा',
+    filter_area: 'क्षेत्र से छानें', filter_pref: 'भोजन पसंद', filter_people: 'कम से कम लोग', apply: 'लागू करें',
+    accept: 'अनुरोध स्वीकारें', accept_confirm: 'यह अनुरोध स्वीकार करें? आप चैट कर सकेंगे और पता निजी में देख सकेंगे।',
+    accepted_by_you: 'आपने यह अनुरोध स्वीकार किया।',
+    mark_ready: 'लेने के लिए तैयार करें', mark_completed: 'पूर्ण होने की पुष्टि करें', cancel: 'अनुरोध रद्द करें',
+    status_open: 'खुला', status_accepted: 'स्वीकृत', status_ready: 'लेने को तैयार',
+    status_completed: 'पूर्ण', status_cancelled: 'रद्द',
+    chat: 'चैट', collection_details: 'संग्रह विवरण', report: 'शिकायत', report_sent: 'शिकायत दर्ज हुई। धन्यवाद।',
+    helper_new: 'किसी के लिए भोजन माँगें',
+    beneficiary: 'लाभार्थी का पहला नाम (वैकल्पिक)', anonymous: 'लाभार्थी को गुमनाम रखें',
+    safe_point: 'सुरक्षित संग्रह स्थान (जैसे बस स्टॉप)',
+    supporting: 'अतिरिक्त जानकारी (वैकल्पिक)',
+    consent: 'मैं पुष्टि करता हूँ कि यह अनुरोध वास्तविक है और मुझे अनुमति है।',
+    photo_consent: 'इस फ़ोटो के लिए मेरी सूचित सहमति है (फ़ोटो कभी अनिवार्य नहीं)।',
+    helper_banner: 'कम्युनिटी हेल्पर द्वारा बनाया गया',
+    donate_new: 'भोजन दान करें',
+    d_title: 'शीर्षक', d_desc: 'भोजन का वर्णन', d_qty: 'मात्रा', d_portions: 'भागों की संख्या',
+    d_ingredients: 'सामग्री (वैकल्पिक)', d_allergens: 'एलर्जेन (वैकल्पिक)',
+    d_storage: 'भंडारण स्थिति', d_prepared: 'बनाने का समय', d_until: 'सुरक्षित संग्रह समय-सीमा',
+    d_pickup: 'पिकअप उपलब्ध', d_delivery: 'मैं डिलीवरी कर सकता हूँ (स्वैच्छिक)', d_address: 'सटीक पिकअप पता (मिलान के बाद निजी में)',
+    submit_donation: 'दान सूचीबद्ध करें', donation_created: 'दान दर्ज हुआ। खाद्य-सुरक्षा जाँच के बाद दिखेगा।',
+    my_requests: 'मेरे अनुरोध', my_donations: 'मेरे दान', my_claims: 'मेरी लिस्टिंग पर दावे',
+    notifications: 'सूचनाएँ', no_notifications: 'अभी कोई सूचना नहीं।',
+    safety_title: 'खाद्य सुरक्षा और भरोसा',
+    offers_title: 'रेस्टोरेंट ऑफर', deals_title: 'डेली डील',
+    ad_disclosure: 'प्रायोजित — भोजन दान नहीं',
+    affiliate_disclosure: 'प्रायोजित एफिलिएट लिंक। ANNPURNN कमीशन पा सकता है।',
+    free_forever: 'दान का भोजन माँगना और लेना हमेशा मुफ़्त है।',
+    login_required: 'पहले लॉगिन करें।',
+    send: 'भेजें', type_message: 'संदेश लिखें…',
+    back: 'पीछे', lang_name: 'हिन्दी'
+  }
+};
+
+let currentLang = localStorage.getItem('annpurnn_lang') || 'en';
+
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key;
+}
+
+function setLang(lang) {
+  currentLang = I18N[lang] ? lang : 'en';
+  localStorage.setItem('annpurnn_lang', currentLang);
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  const btn = document.getElementById('langBtn');
+  if (btn) btn.textContent = currentLang.toUpperCase();
+  if (window.appRerender) window.appRerender();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('langBtn');
+  if (btn) {
+    btn.textContent = currentLang.toUpperCase();
+    btn.addEventListener('click', () => {
+      const order = ['en', 'gu', 'hi'];
+      setLang(order[(order.indexOf(currentLang) + 1) % order.length]);
+    });
+  }
+  setLang(currentLang);
+});

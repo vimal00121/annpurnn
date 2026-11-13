@@ -1,0 +1,18 @@
+{
+  "name": "annpurnn",
+  "version": "0.1.0",
+  "description": "ANNPURNN - community food-sharing platform for Surat, Gujarat. Connects surplus food with people who need it, free of charge, with dignity and privacy for food seekers.",
+  "private": true,
+  "type": "commonjs",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "seed": "node server/seed.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "license": "MIT"
+}
