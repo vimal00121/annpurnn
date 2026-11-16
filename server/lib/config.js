@@ -30,6 +30,16 @@ const config = {
     twilioFrom: process.env.TWILIO_FROM || null
   },
 
+  // Email OTP delivery (optional). Resend or any SMTP server.
+  email: {
+    resendKey: process.env.RESEND_API_KEY || null,
+    smtpHost: process.env.SMTP_HOST || null,
+    smtpPort: Number(process.env.SMTP_PORT || 465),
+    smtpUser: process.env.SMTP_USER || null,
+    smtpPass: process.env.SMTP_PASS || null,
+    from: process.env.EMAIL_FROM || null
+  },
+
   // Abuse prevention defaults
   maxOpenRequestsPerUser: 3,
   duplicateWindowHours: 12,

@@ -15,41 +15,64 @@ function normalisePhone(raw) {
   throw httpError(400, 'Enter a valid 10-digit Indian mobile number.');
 }
 
+function normaliseEmail(raw) {
+  const email = String(raw || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 120) {
+    throw httpError(400, 'Enter a valid email address.');
+  }
+  return email;
+}
+
+// Resolves the login identifier from a request body: phone or email.
+function identifierFrom(body) {
+  if (body.email) return { email: normaliseEmail(body.email) };
+  if (body.phone) return { phone: normalisePhone(body.phone) };
+  throw httpError(400, 'Enter your phone number or email address.');
+}
+
 module.exports = function register(router) {
   router.post('/api/auth/otp/request', async (req, res) => {
     const body = await readJson(req);
-    const phone = normalisePhone(body.phone);
+    const id = identifierFrom(body);
     if (!clientIp(req) || !require('../lib/ratelimit').allow(`otpreq:${clientIp(req)}`, 10, 3600)) {
       throw httpError(429, 'Too many OTP requests from this network.');
     }
-    const devCode = await issueOtp(phone, 'login', clientIp(req));
+    const identifier = id.email || id.phone;
+    const devCode = await issueOtp(identifier, 'login', clientIp(req));
     track(null, 'otp_requested');
     sendJson(res, 200, {
       ok: true,
       message: 'OTP sent. It is valid for 10 minutes.',
-      // Only present in development so the app works without an SMS gateway.
+      // Only present in development so the app works without an SMS/email gateway.
       dev_otp: devCode || undefined
     });
   });
 
   router.post('/api/auth/otp/verify', async (req, res) => {
     const body = await readJson(req);
-    const phone = normalisePhone(body.phone);
+    const id = identifierFrom(body);
+    const identifier = id.email || id.phone;
     const name = String(body.name || '').trim().slice(0, 80);
     const roles = Array.isArray(body.roles) && body.roles.length
       ? body.roles.filter((r) => ['seeker', 'donor', 'helper'].includes(r))
       : ['seeker'];
-    if (!verifyOtp(phone, body.code, 'login')) {
+    if (!verifyOtp(identifier, body.code, 'login')) {
       throw httpError(401, 'Invalid or expired OTP.');
     }
-    let user = db.prepare('SELECT * FROM users WHERE phone = ?').get(phone);
+    let user = id.email
+      ? db.prepare('SELECT * FROM users WHERE email = ?').get(id.email)
+      : db.prepare('SELECT * FROM users WHERE phone = ?').get(id.phone);
     if (!user) {
       if (!name) throw httpError(400, 'Please tell us your name to create your account.');
-      const info = db.prepare(
-        `INSERT INTO users (phone, name, roles, langs, area) VALUES (?, ?, ?, ?, ?)`
-      ).run(phone, name, roles.join(','), body.langs || config.defaultLang, body.area || null);
+      const info = id.email
+        ? db.prepare(
+            `INSERT INTO users (email, name, roles, langs, area) VALUES (?, ?, ?, ?, ?)`
+          ).run(id.email, name, roles.join(','), body.langs || config.defaultLang, body.area || null)
+        : db.prepare(
+            `INSERT INTO users (phone, name, roles, langs, area) VALUES (?, ?, ?, ?, ?)`
+          ).run(id.phone, name, roles.join(','), body.langs || config.defaultLang, body.area || null);
       user = db.prepare('SELECT * FROM users WHERE id = ?').get(info.lastInsertRowid);
-      audit(user.id, 'new', 'user.registered', 'user', user.id, { roles }, clientIp(req));
+      audit(user.id, 'new', 'user.registered', 'user', user.id, { roles, via: id.email ? 'email' : 'phone' }, clientIp(req));
     } else if (user.status !== 'active') {
       throw httpError(403, 'This account is suspended. Contact support.');
     } else {
@@ -61,11 +84,14 @@ module.exports = function register(router) {
         user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
       }
     }
-    db.prepare('UPDATE users SET phone_verified = 1 WHERE id = ?').run(user.id);
+    db.prepare(id.email
+      ? 'UPDATE users SET email_verified = 1 WHERE id = ?'
+      : 'UPDATE users SET phone_verified = 1 WHERE id = ?'
+    ).run(user.id);
     user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
     const token = createSession(user.id);
     track(user.id, 'login');
-    audit(user.id, user.roles, 'auth.login', 'user', user.id, null, clientIp(req));
+    audit(user.id, user.roles, 'auth.login', 'user', user.id, { via: id.email ? 'email' : 'phone' }, clientIp(req));
     setSessionCookie(res, token);
     sendJson(res, 200, { ok: true, token, user: publicUser(user) });
   });

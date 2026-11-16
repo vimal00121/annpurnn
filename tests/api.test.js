@@ -360,3 +360,35 @@ test('COMMUNITY CHAT: flagged message reaches moderation queue and admin can rem
   const feed = await call('chat2', 'GET', '/api/community/messages');
   assert.ok(!feed.data.messages.some((m) => m.id === flagged.id), 'removed message must disappear');
 });
+
+test('EMAIL LOGIN: OTP by email creates account and re-login works', async () => {
+  const ip = (n) => ({ 'X-Forwarded-For': `10.9.0.${n}` }); // unique IPs to dodge the per-network OTP cap
+  const bad = await call(null, 'POST', '/api/auth/otp/request', { email: 'not-an-email' }, ip(1));
+  assert.equal(bad.status, 400);
+  const r1 = await call(null, 'POST', '/api/auth/otp/request', { email: 'donor.ngo@example.com' }, ip(2));
+  assert.equal(r1.status, 200);
+  assert.ok(r1.data.dev_otp, 'dev OTP must be present in tests (no email provider configured)');
+  const r2 = await call(null, 'POST', '/api/auth/otp/verify', {
+    email: 'donor.ngo@example.com', code: r1.data.dev_otp, name: 'NGO Donor', roles: ['donor']
+  });
+  assert.equal(r2.status, 200, JSON.stringify(r2.data));
+  assert.equal(r2.data.user.email, 'donor.ngo@example.com');
+  assert.equal(r2.data.user.emailVerified, true);
+  assert.ok(!r2.data.user.phone, 'email-only account has no phone');
+  // uppercase email normalises to the same account
+  const r3 = await call(null, 'POST', '/api/auth/otp/request', { email: 'Donor.NGO@Example.com' }, ip(3));
+  const r4 = await call(null, 'POST', '/api/auth/otp/verify', {
+    email: 'Donor.NGO@Example.com', code: r3.data.dev_otp, name: 'NGO Donor', roles: ['donor']
+  });
+  assert.equal(r4.status, 200);
+  assert.equal(r4.data.user.id, r2.data.user.id, 'same account after case-normalised login');
+  // email login can also be used by an existing phone user? No — separate accounts; but wrong OTP rejected
+  const r5 = await call(null, 'POST', '/api/auth/otp/request', { email: 'other@example.com' }, ip(4));
+  const r6 = await call(null, 'POST', '/api/auth/otp/verify', { email: 'other@example.com', code: '000000', name: 'X', roles: [] });
+  assert.equal(r6.status, 401);
+});
+
+test('EMAIL LOGIN: identifier required', async () => {
+  const r = await call(null, 'POST', '/api/auth/otp/request', {});
+  assert.equal(r.status, 400);
+});

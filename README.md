@@ -10,6 +10,7 @@
 
 - 📱 Mobile-first web app (Android-ready: the app consumes the same REST API)
 - 🌐 English · ગુજરાતી · हिन्दी
+- 📱✉️ Login with phone (SMS OTP) or email (email OTP) — no passwords
 - 🔒 Privacy by design: no public names, faces, phones or addresses; no poverty proof
 - 💬 Community chat room where donors, seekers and helpers can talk (moderated)
 - 💚 Free forever — no ads, no sponsored sections, no charges

@@ -78,8 +78,14 @@ views.home = () => {
 views.auth = () => {
   $app.innerHTML = `
     <div class="card"><h2>${esc(t('login'))}</h2>
-      <div class="field"><label>${esc(t('phone'))}</label>
+      <div class="row" style="gap:8px;margin-bottom:10px">
+        <button class="chip" id="modePhone" style="border-color:var(--green)">📱 ${esc(t('use_phone'))}</button>
+        <button class="chip" id="modeEmail" style="border-color:var(--muted,#999)">✉️ ${esc(t('use_email'))}</button>
+      </div>
+      <div class="field" id="phoneField"><label>${esc(t('phone'))}</label>
         <input id="phone" type="tel" inputmode="numeric" placeholder="98XXXXXXXX" autocomplete="tel"></div>
+      <div class="field" id="emailField" hidden><label>${esc(t('email'))}</label>
+        <input id="email" type="email" placeholder="you@example.com" autocomplete="email"></div>
       <div class="field" id="nameField" hidden><label>${esc(t('name'))}</label>
         <input id="name" maxlength="80" autocomplete="name"></div>
       <div class="field" id="rolesField" hidden>
@@ -93,16 +99,29 @@ views.auth = () => {
       <button class="btn primary" id="step1">${esc(t('get_otp'))}</button>
       <button class="btn gold" id="step2" hidden>${esc(t('verify_otp'))}</button>
       <div id="authErr"></div>
-      <p class="hint">We verify your phone with an OTP to keep the community safe. Your number is never shown publicly.</p>
+      <p class="hint">We verify your phone or email with an OTP to keep the community safe. Your contact details are never shown publicly.</p>
     </div>`;
-  let phone = '';
+  let mode = 'phone';
+  const modePhoneBtn = document.getElementById('modePhone');
+  const modeEmailBtn = document.getElementById('modeEmail');
+  function setMode(m) {
+    mode = m;
+    document.getElementById('phoneField').hidden = m !== 'phone';
+    document.getElementById('emailField').hidden = m !== 'email';
+    modePhoneBtn.style.borderColor = m === 'phone' ? 'var(--green)' : 'var(--muted,#999)';
+    modeEmailBtn.style.borderColor = m === 'email' ? 'var(--green)' : 'var(--muted,#999)';
+  }
+  modePhoneBtn.onclick = () => setMode('phone');
+  modeEmailBtn.onclick = () => setMode('email');
   document.getElementById('step1').onclick = async () => {
-    phone = document.getElementById('phone').value.trim();
+    const payload = mode === 'email'
+      ? { email: document.getElementById('email').value.trim() }
+      : { phone: document.getElementById('phone').value.trim() };
     try {
-      const r = await API.post('/api/auth/otp/request', { phone });
+      const r = await API.post('/api/auth/otp/request', payload);
       document.getElementById('authErr').innerHTML = r.dev_otp
-        ? `<div class="okmsg">OTP sent ✅ Dev mode (no SMS gateway configured): your code is <b>${esc(r.dev_otp)}</b>. With a real SMS provider this code arrives by SMS instead.</div>`
-        : '<div class="okmsg">OTP sent by SMS. It is valid for 10 minutes.</div>';
+        ? `<div class="okmsg">OTP sent ✅ Dev mode (no SMS/email gateway configured): your code is <b>${esc(r.dev_otp)}</b>. With a real provider this code arrives by SMS or email instead.</div>`
+        : `<div class="okmsg">${mode === 'email' ? 'OTP sent to your email' : 'OTP sent by SMS'}. It is valid for 10 minutes.</div>`;
       document.getElementById('otpField').hidden = false;
       document.getElementById('nameField').hidden = false;
       document.getElementById('rolesField').hidden = false;
@@ -118,10 +137,12 @@ views.auth = () => {
     if (document.getElementById('rDonor').checked) roles.push('donor');
     if (document.getElementById('rHelper').checked) roles.push('helper');
     try {
-      const r = await API.post('/api/auth/otp/verify', {
-        phone, code: document.getElementById('otp').value.trim(),
-        name: document.getElementById('name').value.trim(), roles
-      });
+      const payload = mode === 'email'
+        ? { email: document.getElementById('email').value.trim(), code: document.getElementById('otp').value.trim(),
+            name: document.getElementById('name').value.trim(), roles }
+        : { phone: document.getElementById('phone').value.trim(), code: document.getElementById('otp').value.trim(),
+            name: document.getElementById('name').value.trim(), roles };
+      const r = await API.post('/api/auth/otp/verify', payload);
       ME = r.user;
       toast('🙏 ' + (ME.name || 'Welcome'));
       location.hash = '#/';

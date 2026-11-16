@@ -18,12 +18,13 @@ function verifyPassword(password, stored) {
 }
 
 // ---------- OTP ----------
-function hashCode(phone, code) {
-  return crypto.createHmac('sha256', config.secret).update(`${phone}:${code}`).digest('hex');
+// An OTP identifier is either a phone (+91XXXXXXXXXX) or an email address.
+function hashCode(identifier, code) {
+  return crypto.createHmac('sha256', config.secret).update(`${identifier}:${code}`).digest('hex');
 }
 
-async function issueOtp(phone, purpose = 'login', ip) {
-  if (!allow(`otp:${phone}`, 5, 15 * 60)) {
+async function issueOtp(identifier, purpose = 'login', ip) {
+  if (!allow(`otp:${identifier}`, 5, 15 * 60)) {
     const err = new Error('Too many OTP requests. Please wait 15 minutes.');
     err.status = 429;
     throw err;
@@ -31,25 +32,28 @@ async function issueOtp(phone, purpose = 'login', ip) {
   const code = String(crypto.randomInt(100000, 999999));
   const expires = new Date(Date.now() + config.otpTtlMinutes * 60 * 1000)
     .toISOString().replace('T', ' ').slice(0, 19);
+  const isEmail = identifier.includes('@');
   db.prepare(
-    `INSERT INTO otp_codes (phone, code_hash, purpose, expires_at) VALUES (?, ?, ?, ?)`
-  ).run(phone, hashCode(phone, code), purpose, expires);
-  await require('./otp-sender').send(phone, code);
-  // The code is only returned by the API in dev mode with no real SMS
+    `INSERT INTO otp_codes (phone, email, code_hash, purpose, expires_at) VALUES (?, ?, ?, ?, ?)`
+  ).run(isEmail ? null : identifier, isEmail ? identifier : null, hashCode(identifier, code), purpose, expires);
+  const sender = isEmail ? require('./email-sender') : require('./otp-sender');
+  await sender.send(identifier, code);
+  // The code is only returned by the API in dev mode with no real delivery
   // provider configured (otherwise it would leak to the client).
-  const smsLive = require('./otp-sender').providerName();
-  return config.devOtp && !smsLive ? code : null;
+  const live = sender.providerName();
+  return config.devOtp && !live ? code : null;
 }
 
-function verifyOtp(phone, code, purpose = 'login') {
+function verifyOtp(identifier, code, purpose = 'login') {
+  const isEmail = identifier.includes('@');
   const row = db.prepare(
-    `SELECT * FROM otp_codes WHERE phone = ? AND purpose = ? AND used = 0
+    `SELECT * FROM otp_codes WHERE ${isEmail ? 'email = ?' : 'phone = ?'} AND purpose = ? AND used = 0
      ORDER BY id DESC LIMIT 1`
-  ).get(phone, purpose);
+  ).get(identifier, purpose);
   if (!row) return false;
   if (row.expires_at < now()) return false;
   if (row.attempts >= config.otpMaxAttempts) return false;
-  if (row.code_hash !== hashCode(phone, String(code))) {
+  if (row.code_hash !== hashCode(identifier, String(code))) {
     db.prepare('UPDATE otp_codes SET attempts = attempts + 1 WHERE id = ?').run(row.id);
     return false;
   }
@@ -79,10 +83,12 @@ function publicUser(u) {
     id: u.id,
     name: u.name,
     phone: u.phone,
+    email: u.email,
     roles: u.roles.split(','),
     langs: u.langs,
     area: u.area,
     phoneVerified: !!u.phone_verified,
+    emailVerified: !!u.email_verified,
     donorVerified: !!u.donor_verified,
     helperVerified: !!u.helper_verified,
     status: u.status

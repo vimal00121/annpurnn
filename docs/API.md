@@ -6,7 +6,7 @@ Base URL: `/api`. Auth: `annpurnn_session` HttpOnly cookie (web) or `Authorizati
 
 | Endpoint | Anonymous | Seeker | Donor | Helper | Admin |
 |---|---|---|---|---|---|
-| `POST /auth/otp/request`, `/auth/otp/verify` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `POST /auth/otp/request`, `/auth/otp/verify` (phone **or email**) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `GET /requests`, `/donations`, `/events`, `/safety/rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
 | `GET·POST /community/messages` (community chat) | ❌ | ✅ | ✅ | ✅ | ✅ |
 | `GET /requests/:id` | public columns only | + own private | + matched private | + own private | + all private |

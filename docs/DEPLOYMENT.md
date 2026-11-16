@@ -105,6 +105,29 @@ TWILIO_FROM           = <purchased number or Messaging Service SID>
 
 When a provider is configured, the OTP is never returned by the API or shown on screen — it is only sent by SMS. Delivery failures return a clear error to the user instead of silently swallowing the code. Note: transactional SMS to Indian numbers legally requires DLT registration (see docs/FOOD_SAFETY.md launch checklist).
 
+## Email login (OTP by email)
+
+Users can log in with an email address instead of a phone. Email OTP delivery is configured with either:
+
+**Resend (simplest, free tier):**
+
+```
+RESEND_API_KEY = re_xxxxxxxx
+EMAIL_FROM     = "ANNPURNN" <login@yourdomain.com>
+```
+
+**Any SMTP server (Gmail, Zoho, …):**
+
+```
+SMTP_HOST = smtp.gmail.com
+SMTP_PORT = 465
+SMTP_USER = you@gmail.com
+SMTP_PASS = <app password>
+EMAIL_FROM = you@gmail.com
+```
+
+Without a provider, email OTPs behave like SMS OTPs in dev mode: the code is shown on the login screen and in server logs. Email-only accounts are first-class users — they can request, donate and chat like phone accounts, and admin verification works the same.
+
 ## Scaling path
 1. PostgreSQL: swap `server/lib/db.js` (queries are already simple SQL).
 2. Redis for rate limits/sessions if you run multiple Node processes.

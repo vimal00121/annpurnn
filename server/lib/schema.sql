@@ -2,11 +2,13 @@ PRAGMA journal_mode = WAL;
 
 CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  phone TEXT UNIQUE NOT NULL,              -- stored E.164, never shown publicly
+  phone TEXT UNIQUE,                       -- stored E.164, never shown publicly; null for email-only accounts
+  email TEXT UNIQUE,                       -- optional login identifier, lowercase
   name TEXT NOT NULL,
   langs TEXT NOT NULL DEFAULT 'en',
   roles TEXT NOT NULL DEFAULT 'seeker',    -- csv: seeker,donor,helper,admin
   phone_verified INTEGER NOT NULL DEFAULT 0,
+  email_verified INTEGER NOT NULL DEFAULT 0,
   donor_verified INTEGER NOT NULL DEFAULT 0,
   helper_verified INTEGER NOT NULL DEFAULT 0,
   status TEXT NOT NULL DEFAULT 'active',   -- active | suspended | banned
@@ -17,7 +19,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS otp_codes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  phone TEXT NOT NULL,
+  phone TEXT,                              -- identifier: phone (E.164) or email
+  email TEXT,
   code_hash TEXT NOT NULL,
   purpose TEXT NOT NULL DEFAULT 'login',
   expires_at TEXT NOT NULL,
