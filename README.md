@@ -1,4 +1,10 @@
-# ANNPURNN · અન્નપૂર્ણ
+<p align="center">
+  <img src="public/img/emblem.png" alt="ANNPURNN emblem — Annapurna feeds Shiva" width="120">
+</p>
+
+<h1 align="center">ANNPURNN · અન્નપૂર્ણ</h1>
+
+<p align="center"><b>अन्न ब्रह्म है |</b> · અન્ન બ્રહ્મ છે | · Food is divine</p>
 
 **Share food, share dignity.** A community food-sharing platform for Surat, Gujarat — connecting people with surplus food to people who need it. Food is always free. Food seekers' dignity, privacy and safety come first.
 

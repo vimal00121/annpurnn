@@ -60,7 +60,10 @@ views.home = () => {
   ];
   $app.innerHTML = `
     <div class="home-hero">
-      <h1>${esc(t('hero_title'))}</h1><p>${esc(t('hero_sub'))}</p>
+      <img src="/img/emblem.png" alt="" class="hero-emblem" width="72" height="72">
+      <h1>${esc(t('hero_title'))}</h1>
+      <p class="slogan">${esc(t('slogan'))}</p>
+      <p>${esc(t('hero_sub'))}</p>
     </div>
     ${ME ? `<div class="card green">🙏 <strong>${esc(ME.name)}</strong>
         <div class="muted">${ME.roles.map((r) => esc(r)).join(' · ')}

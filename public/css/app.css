@@ -79,6 +79,16 @@ h1 { font-size: 22px; } h2 { font-size: 18px; } h3 { font-size: 16px; }
 }
 .home-hero h1 { color: #fff; margin: 0 0 4px; font-size: 21px; }
 .home-hero p { margin: 0; opacity: .95; font-size: 14px; }
+.home-hero .hero-emblem {
+  display: block; width: 72px; height: 72px; border-radius: 50%;
+  margin: 0 auto 10px; box-shadow: 0 2px 10px rgba(0,0,0,.35);
+  background: #fffdf5;
+}
+.home-hero .slogan {
+  color: var(--gold); font-weight: 700; font-size: 16px;
+  margin: 6px 0 4px; opacity: 1; letter-spacing: .3px;
+}
+.brand-emblem { border-radius: 50%; background: #fffdf5; }
 
 .tile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .tile {

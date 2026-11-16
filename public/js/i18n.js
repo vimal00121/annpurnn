@@ -2,6 +2,7 @@
 const I18N = {
   en: {
     tagline: 'Share food, share dignity',
+    slogan: 'अन्न ब्रह्म है | — Food is divine',
     nav_home: 'Home', nav_requests: 'Requests', nav_donations: 'Donate',
     nav_safety: 'Safety', nav_me: 'Me',
     hero_title: 'No one in Surat should sleep hungry.',
@@ -60,6 +61,7 @@ const I18N = {
   },
   gu: {
     tagline: 'ખોરાક વહેંચો, ગરિમા વહેંચો',
+    slogan: 'અન્ન બ્રહ્મ છે |',
     nav_home: 'ઘર', nav_requests: 'વિનંતીઓ', nav_donations: 'દાન',
     nav_safety: 'સુરક્ષા', nav_me: 'મારું',
     hero_title: 'સુરતમાં કોઈ ભૂખ્યું સૂવું ન જોઈએ.',
@@ -118,6 +120,7 @@ const I18N = {
   },
   hi: {
     tagline: 'खाना बाँटें, सम्मान बाँटें',
+    slogan: 'अन्न ब्रह्म है |',
     nav_home: 'होम', nav_requests: 'अनुरोध', nav_donations: 'दान',
     nav_safety: 'सुरक्षा', nav_me: 'मैं',
     hero_title: 'सूरत में कोई भूखा न सोए।',
