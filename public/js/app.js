@@ -386,8 +386,10 @@ views.requestDetail = async (id) => {
 views.donateNew = () => {
   if (!requireLogin()) return;
   if (!ME.roles.includes('donor')) {
-    $app.innerHTML = `<div class="card"><h2>${esc(t('donate_new'))}</h2>
-      <p>Register as a donor to share food. Open <a href="#/auth">#login</a> and add the donor role, then logout and login again.</p></div>`;
+    $app.innerHTML = `<div class="card gold"><h2>${esc(t('donate_new'))}</h2>
+      <p>🤲 To share food, your account needs the <strong>donor</strong> role.</p>
+      <p class="muted">It takes 20 seconds: tap the button below, verify with an OTP again, and tick <strong>${esc(t('role_donors'))}</strong> before verifying. Your other roles are kept — no need to log out first.</p>
+      <a class="btn primary" href="#/auth">✅ ${esc(t('become_donor'))}</a></div>`;
     return;
   }
   const areaOpts = AREAS.map((a) => `<option>${esc(a)}</option>`).join('');
@@ -691,6 +693,13 @@ async function render() {
 window.appRerender = render;
 
 (async function init() {
+  // If the session dies mid-use (server restart), go to login with a clear message.
+  API.onUnauthorized = () => {
+    ME = null;
+    toast(t('session_expired'), true);
+    location.hash = '#/auth';
+    render();
+  };
   try {
     const [me, areas] = await Promise.all([API.get('/api/me'), API.get('/api/meta/areas')]);
     ME = me.user;
