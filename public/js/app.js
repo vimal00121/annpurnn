@@ -439,21 +439,41 @@ views.donateNew = () => {
   };
 };
 
+function donationCard(d, extra = '') {
+  return `<a class="card req-card ${d.safety_review === 'passed' ? 'status-ready' : ''}" href="#/donation/${d.id}">
+    <div class="req-head"><strong>${esc(d.title)}</strong><span class="req-code">${esc(d.code)}</span></div>
+    ${extra}
+    <p class="muted">${esc(d.description)}</p>
+    <div class="pills">
+      ${d.portions ? `<span class="pill">${esc(d.portions)} portions</span>` : ''}
+      <span class="pill">${d.veg ? '🥬 ' + t('veg') : '🍗 ' + t('nonveg')}</span>
+      <span class="pill">📍 ${esc(d.area)}</span>
+      <span class="pill warn">⏰ ${esc(d.safe_until)}</span>
+      ${d.delivery_available ? '<span class="pill">🛵 delivery</span>' : ''}
+    </div></a>`;
+}
+
 views.donations = async () => {
-  $app.innerHTML = `<h2>${esc(t('tile_donate'))}</h2><div id="donList"><div class="muted">…</div></div>
+  $app.innerHTML = `<h2>${esc(t('tile_donate'))}</h2><div id="myPending"></div><div id="donList"><div class="muted">…</div></div>
     ${ME && ME.roles.includes('donor') ? '<a class="btn gold" href="#/donate/new">+ ' + esc(t('donate_new')) + '</a>' : ''}`;
   const r = await API.get('/api/donations');
+  // Show the donor their own listings that are not publicly visible yet,
+  // so a fresh donation never looks like it failed to save.
+  if (ME) {
+    try {
+      const mine = await API.get('/api/donations/mine');
+      const pending = mine.donations.filter((d) => d.safety_review !== 'passed' || d.status !== 'available');
+      if (pending.length) {
+        document.getElementById('myPending').innerHTML = `<h3>${esc(t('my_donations'))}</h3>` +
+          pending.map((d) => donationCard(d,
+            d.safety_review === 'pending' ? '<div class="notice">⏳ ' + esc(t('awaiting_review')) + '</div>'
+            : d.safety_review === 'rejected' ? '<div class="err">❌ ' + esc(t('review_rejected')) + '</div>'
+            : `<div class="muted">${esc(t('status_' + d.status) || d.status)}</div>`)).join('');
+      }
+    } catch (e) { /* not logged in or offline — public list still shows */ }
+  }
   document.getElementById('donList').innerHTML = r.donations.length
-    ? r.donations.map((d) => `<a class="card req-card status-ready" href="#/donation/${d.id}">
-        <div class="req-head"><strong>${esc(d.title)}</strong><span class="req-code">${esc(d.code)}</span></div>
-        <p class="muted">${esc(d.description)}</p>
-        <div class="pills">
-          ${d.portions ? `<span class="pill">${esc(d.portions)} portions</span>` : ''}
-          <span class="pill">${d.veg ? '🥬 ' + t('veg') : '🍗 ' + t('nonveg')}</span>
-          <span class="pill">📍 ${esc(d.area)}</span>
-          <span class="pill warn">⏰ ${esc(d.safe_until)}</span>
-          ${d.delivery_available ? '<span class="pill">🛵 delivery</span>' : ''}
-        </div></a>`).join('')
+    ? r.donations.map((d) => donationCard(d)).join('')
     : '<div class="card muted">No donations available right now.</div>';
 };
 
@@ -517,6 +537,8 @@ views.me = async () => {
     <h3>${esc(t('my_donations'))}</h3>
     ${mineD.donations.length ? mineD.donations.map((d) => `<a class="card" href="#/donation/${d.id}">
       <strong>${esc(d.title)}</strong> <span class="status ${esc(d.status)}">${esc(d.status)}</span>
+      ${d.safety_review === 'pending' ? '<span class="pill warn">⏳ ' + esc(t('awaiting_review')) + '</span>' : ''}
+      ${d.safety_review === 'rejected' ? '<span class="pill warn">❌ ' + esc(t('review_rejected')) + '</span>' : ''}
       <div class="muted">${esc(d.area)} · ${esc(d.safe_until)}</div></a>`).join('') : '<div class="card muted">—</div>'}
     <a class="btn outline" href="#/threads">💬 ${esc(t('chat'))}</a>`;
   document.getElementById('logoutBtn').onclick = async () => {
@@ -681,7 +703,9 @@ async function render() {
           await views[route.view](query);
         }
       } catch (e) {
-        $app.innerHTML = `<div class="err card">${esc(e.message)}</div>`;
+        $app.innerHTML = `<div class="err card">${esc(e.message)}
+          <div style="margin-top:8px"><button class="btn small primary" onclick="render()">↻ Retry</button>
+          <span class="muted"> If the server was sleeping (free hosting), wait a few seconds and retry.</span></div></div>`;
       }
       window.scrollTo(0, 0);
       return;
