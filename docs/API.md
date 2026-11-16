@@ -7,7 +7,8 @@ Base URL: `/api`. Auth: `annpurnn_session` HttpOnly cookie (web) or `Authorizati
 | Endpoint | Anonymous | Seeker | Donor | Helper | Admin |
 |---|---|---|---|---|---|
 | `POST /auth/otp/request`, `/auth/otp/verify` | ✅ | ✅ | ✅ | ✅ | ✅ |
-| `GET /requests`, `/donations`, `/events`, `/offers/*`, `/deals`, `/safety/rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `GET /requests`, `/donations`, `/events`, `/safety/rules` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `GET·POST /community/messages` (community chat) | ❌ | ✅ | ✅ | ✅ | ✅ |
 | `GET /requests/:id` | public columns only | + own private | + matched private | + own private | + all private |
 | `POST /requests` | ❌ | ✅ (own) | ✅ | ✅ (own + on-behalf) | ✅ |
 | `POST /requests/:id/accept` | ❌ | ❌ | ✅ | ❌ | ❌* |
@@ -60,13 +61,12 @@ Base URL: `/api`. Auth: `annpurnn_session` HttpOnly cookie (web) or `Authorizati
 - `GET /api/admin/users` · `PATCH /api/admin/users/:id` `{status?, donor_verified?, helper_verified?, roles?}`
 - `GET /api/admin/requests` · `GET /api/admin/donations` · `PATCH /api/admin/donations/:id/safety-review` `{safety_review: passed|rejected, note}`
 - `GET /api/admin/reports` · `PATCH /api/admin/reports/:id` `{status: reviewing|resolved|dismissed, note}`
-- `GET /api/admin/ads` · `POST /api/admin/ads/restaurant` · `POST /api/admin/ads/affiliate` · `PATCH /api/admin/ads/:kind/:id/toggle`
-- `GET /api/admin/audit` · `GET /api/admin/analytics` (14 KPIs).
+- `GET /api/admin/community` · `DELETE /api/admin/community/:id` (remove a chat message)
+- `GET /api/admin/audit` · `GET /api/admin/analytics`.
 
-### Commerce (separate, disclosed)
+### Community
 - `GET /api/events`
-- `GET /api/offers/restaurants` (returns `disclosure`) · `POST /api/offers/restaurants/:id/view`
-- `GET /api/deals` (returns `disclosure`) · `POST /api/deals/:id/click`
+- `GET /api/community/messages?after=<id>` · `POST /api/community/messages` `{body}` (login required, 10 msgs/min, abuse-flagged)
 - `GET /api/safety/rules`
 
 ## Data exposed publicly (explicit list)

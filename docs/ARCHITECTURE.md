@@ -100,7 +100,7 @@ Listing → automatic safety screening (prohibited items, deadline sanity) → *
 | `server/lib/web.js` | Router, JSON, cookies, security headers, static |
 | `server/lib/requests.js` | Validation, duplicate detection, status machine |
 | `server/lib/ratelimit.js` | SQLite-backed fixed-window limiter |
-| `server/routes/*.js` | auth, requests, donations, chat, notifications, upload, admin, commerce |
+| `server/routes/*.js` | auth, requests, donations, chat, notifications, upload, admin, community (events, chat, safety rules) |
 | `public/` | Web SPA (mobile-first) |
 | `public/admin.html` | Admin & moderation dashboard |
 | `tests/api.test.js` | 22 end-to-end API tests |

@@ -103,11 +103,11 @@ Donor accepts ──▶ chat between DONOR and HELPER ──▶ collection/deliv
    ▼
 📊 Analytics   DAU/MAU, requests created/fulfilled, avg fulfilment time,
 │              active & repeat donors, helper requests, collections,
-│              cancellations, offer views, affiliate clicks, ad revenue
+│              cancellations, community chat activity
 ├─▶ 👥 Users          search, verify donor / helper, suspend, ban
 ├─▶ 🍲 Requests       monitor all requests + statuses (incl. helper-created)
 ├─▶ 🤲 Donations      food-safety review: pass / reject each listing
 ├─▶ 🚩 Complaints     suspicious/fraud/safety reports → reviewing → resolved/dismissed
-├─▶ 📢 Advertising    manage restaurant ads + affiliate deals, revenue
+├──▶ 💬 Community chat moderate the open chat room, remove abusive messages
 └─▶ 🧾 Audit log      every sensitive action, with actor + IP
 ```

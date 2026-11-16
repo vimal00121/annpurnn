@@ -55,8 +55,7 @@ views.home = () => {
     { href: '#/request/new?for=someone', em: '🤝', label: t('tile_help'), sub: t('tile_help_sub') },
     { href: '#/requests', em: '🍲', label: t('tile_feed'), sub: t('tile_feed_sub') },
     { href: '#/events', em: '📅', label: t('tile_events'), sub: t('tile_events_sub') },
-    { href: '#/offers', em: '🍽️', label: t('tile_offers'), sub: t('tile_offers_sub'), commercial: true },
-    { href: '#/deals', em: '🛒', label: t('tile_deals'), sub: t('tile_deals_sub'), commercial: true }
+    { href: '#/community', em: '💬', label: t('tile_community'), sub: t('tile_community_sub') }
   ];
   $app.innerHTML = `
     <div class="home-hero">
@@ -580,28 +579,45 @@ views.events = async () => {
     : '<div class="card muted">No upcoming events.</div>');
 };
 
-views.offers = async () => {
-  const r = await API.get('/api/offers/restaurants');
-  $app.innerHTML = `<h2>🍽️ ${esc(t('offers_title'))}</h2>
-    <div class="notice">${esc(r.disclosure)}</div>` +
-    r.offers.map((o) => `<div class="card sponsored"><span class="tag">${esc(t('ad_disclosure'))}</span>
-      <strong>${esc(o.restaurant_name)}</strong> <span class="pill">📍 ${esc(o.area)}</span>
-      <p>${esc(o.headline)}</p><p class="muted">${esc(o.details || '')}</p></div>`).join('') +
-    `<p class="muted">💚 ${esc(t('free_forever'))}</p>`;
-  r.offers.forEach((o) => API.post(`/api/offers/restaurants/${o.id}/view`));
-};
-
-views.deals = async () => {
-  const r = await API.get('/api/deals');
-  $app.innerHTML = `<h2>🛒 ${esc(t('deals_title'))}</h2>
-    <div class="notice">${esc(r.disclosure)}</div>` +
-    r.deals.map((d) => `<div class="card sponsored"><span class="tag">${esc(t('affiliate_disclosure'))}</span>
-      <div class="row spread"><strong>${esc(d.product_name)}</strong><span class="pill">${esc(d.price_text || '')}</span></div>
-      <p class="muted">via ${esc(d.sponsor)} · ${esc(d.category || '')}</p>
-      <a class="btn gold small" href="${esc(d.url)}" target="_blank" rel="nofollow sponsored noopener" data-deal="${d.id}">View deal →</a></div>`).join('');
-  document.querySelectorAll('[data-deal]').forEach((a) => {
-    a.addEventListener('click', () => API.post(`/api/deals/${a.dataset.deal}/click`));
-  });
+views.community = async () => {
+  if (!requireLogin()) return;
+  $app.innerHTML = `<a class="btn small outline" href="#/">← ${esc(t('nav_home'))}</a>
+    <h2>💬 ${esc(t('community_title'))}</h2>
+    <div class="notice">${esc(t('community_rules'))}</div>
+    <div class="card chat" id="communityList"></div>
+    <div class="row"><input id="communityInput" placeholder="${esc(t('type_message'))}" maxlength="500">
+    <button class="btn small primary" id="communitySend" style="width:auto">${esc(t('send'))}</button></div>`;
+  const list = document.getElementById('communityList');
+  let lastId = 0;
+  function renderMsgs(msgs) {
+    list.insertAdjacentHTML('beforeend', msgs.map((m) =>
+      `<div class="msg ${m.mine ? 'mine' : ''}"><b>${esc(m.sender_name)}</b><br>${esc(m.body)}<time>${esc((m.created_at || '').slice(11, 16))}</time></div>`).join(''));
+    list.scrollTop = list.scrollHeight;
+  }
+  async function poll() {
+    try {
+      const r = await API.get(`/api/community/messages?after=${lastId}`);
+      if (r.messages.length) {
+        lastId = r.messages[r.messages.length - 1].id;
+        renderMsgs(r.messages);
+      }
+    } catch (e) { /* stopped */ }
+  }
+  document.getElementById('communitySend').onclick = async () => {
+    const inp = document.getElementById('communityInput');
+    if (!inp.value.trim()) return;
+    try {
+      const m = await API.post('/api/community/messages', { body: inp.value });
+      inp.value = '';
+      lastId = Math.max(lastId, m.id);
+      renderMsgs([m]);
+    } catch (e) { toast(e.message, true); }
+  };
+  await poll();
+  const timer = setInterval(() => {
+    if (!location.hash.startsWith('#/community')) { clearInterval(timer); return; }
+    poll();
+  }, 3000);
 };
 
 // ---------------- router ----------------
@@ -621,8 +637,7 @@ const routes = [
   { re: /^#\/notifications$/, view: 'notifications' },
   { re: /^#\/safety$/, view: 'safety' },
   { re: /^#\/events$/, view: 'events' },
-  { re: /^#\/offers$/, view: 'offers' },
-  { re: /^#\/deals$/, view: 'deals' }
+  { re: /^#\/community$/, view: 'community' }
 ];
 
 async function render() {

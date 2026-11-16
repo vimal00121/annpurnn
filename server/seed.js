@@ -99,15 +99,10 @@ db.prepare(`INSERT INTO food_events (title, organiser, area, starts_at, ends_at,
   ('Sunday Langar', 'Gurudwara Sahib Seva Society', 'City Light', '2025-01-05 12:00', '2025-01-05 15:00', 'Free community langar for everyone. No questions asked.'),
   ('Food Drive - Udhna', 'ANNPURNN Volunteers', 'Udhna', '2025-01-07 18:00', '2025-01-07 21:00', 'Weekly evening food distribution near Udhna railway station.')`);
 
-db.prepare(`INSERT INTO restaurant_offers (restaurant_name, area, headline, details) VALUES
-  ('Kathiyawadi Kitchen', 'Piplod', '20% off lunch thali (paid ad)', 'Sponsored advertisement. Not a food donation.')`);
-
-db.prepare(`INSERT INTO affiliate_deals (product_name, sponsor, category, url, price_text) VALUES
-  ('Steel tiffin boxes (2pc)', 'Amazon', 'kitchen', 'https://www.amazon.in/s?k=steel+tiffin', '₹499'),
-  ('Bulk rice 10kg', 'Flipkart', 'grocery', 'https://www.flipkart.com/search?q=rice+10kg', '₹549')`);
-
-db.prepare('INSERT INTO ad_revenue (source, ref_id, amount_paise, note) VALUES (?, 1, 150000, ?), (?, 1, 4500, ?)')
-  .run('restaurant', 'Monthly restaurant ad slot', 'affiliate', 'Jan affiliate commission');
+db.prepare('INSERT INTO community_messages (user_id, body) VALUES (?, ?), (?, ?), (?, ?)')
+  .run(donor, 'નમસ્તે! Welcome to the ANNPURNN community room. अन्न ब्रह्म है | 🙏',
+    helper, 'We are organising a Sunday langar at City Light. Volunteers welcome!',
+    donor2, 'If you have surplus food after a family function, please donate it here instead of throwing it away.');
 
 notify(seeker, 'welcome', { message: 'Welcome to ANNPURNN. You can request food free of charge, always.' });
 

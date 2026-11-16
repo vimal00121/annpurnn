@@ -92,48 +92,15 @@ module.exports = function register(router) {
     sendJson(res, 200, { ok: true });
   });
 
-  // ---------- ads management ----------
-  router.get('/api/admin/ads', async (req, res) => {
+  // ---------- community chat moderation ----------
+  router.get('/api/admin/community', async (req, res) => {
     admin(req);
-    const offers = db.prepare('SELECT * FROM restaurant_offers ORDER BY id DESC').all();
-    const deals = db.prepare('SELECT * FROM affiliate_deals ORDER BY id DESC').all();
-    const revenue = db.prepare(
-      `SELECT source, SUM(amount_paise) AS total_paise FROM ad_revenue GROUP BY source`
+    const rows = db.prepare(
+      `SELECT m.id, m.body, m.flagged, m.removed, m.created_at, u.name AS sender_name, u.phone
+       FROM community_messages m JOIN users u ON u.id = m.user_id
+       ORDER BY m.id DESC LIMIT 200`
     ).all();
-    sendJson(res, 200, { offers, deals, revenue });
-  });
-
-  router.post('/api/admin/ads/restaurant', async (req, res) => {
-    const me = admin(req);
-    const body = await readJson(req);
-    const info = db.prepare(
-      `INSERT INTO restaurant_offers (restaurant_name, area, headline, details) VALUES (?, ?, ?, ?)`
-    ).run(String(body.restaurant_name || '').slice(0, 120), String(body.area || '').slice(0, 80),
-      String(body.headline || '').slice(0, 200), String(body.details || '').slice(0, 500));
-    audit(me.id, 'admin', 'admin.ad_created', 'restaurant_offer', Number(info.lastInsertRowid), null, clientIp(req));
-    sendJson(res, 201, { ok: true, id: Number(info.lastInsertRowid) });
-  });
-
-  router.post('/api/admin/ads/affiliate', async (req, res) => {
-    const me = admin(req);
-    const body = await readJson(req);
-    const info = db.prepare(
-      `INSERT INTO affiliate_deals (product_name, sponsor, category, url, price_text) VALUES (?, ?, ?, ?, ?)`
-    ).run(String(body.product_name || '').slice(0, 120), String(body.sponsor || '').slice(0, 60),
-      String(body.category || '').slice(0, 60), String(body.url || '').slice(0, 500),
-      String(body.price_text || '').slice(0, 40));
-    audit(me.id, 'admin', 'admin.ad_created', 'affiliate_deal', Number(info.lastInsertRowid), null, clientIp(req));
-    sendJson(res, 201, { ok: true, id: Number(info.lastInsertRowid) });
-  });
-
-  router.patch('/api/admin/ads/:kind/:id/toggle', async (req, res) => {
-    const me = admin(req);
-    const table = req.params.kind === 'restaurant' ? 'restaurant_offers' : 'affiliate_deals';
-    const row = db.prepare(`SELECT active FROM ${table} WHERE id = ?`).get(req.params.id);
-    if (!row) throw httpError(404, 'Ad not found');
-    db.prepare(`UPDATE ${table} SET active = ? WHERE id = ?`).run(row.active ? 0 : 1, req.params.id);
-    audit(me.id, 'admin', 'admin.ad_toggled', table, Number(req.params.id), null, clientIp(req));
-    sendJson(res, 200, { ok: true });
+    sendJson(res, 200, { messages: rows });
   });
 
   // ---------- audit log ----------
@@ -172,11 +139,7 @@ module.exports = function register(router) {
       `SELECT COUNT(*) n FROM request_events WHERE note LIKE 'completion confirmed by seeker%'`
     ).get().n;
     const cancellations = db.prepare("SELECT COUNT(*) n FROM food_requests WHERE status = 'cancelled'").get().n;
-    const offerViews = db.prepare('SELECT COALESCE(SUM(views),0) n FROM restaurant_offers').get().n;
-    const affiliateClicks = db.prepare('SELECT COALESCE(SUM(clicks),0) n FROM affiliate_deals').get().n;
-    const revenue = db.prepare(
-      `SELECT COALESCE(SUM(amount_paise),0) paise FROM ad_revenue`
-    ).get().paise;
+    const communityMessages = db.prepare('SELECT COUNT(*) n FROM community_messages WHERE removed = 0').get().n;
     const openReports = db.prepare("SELECT COUNT(*) n FROM reports WHERE status = 'open'").get().n;
 
     sendJson(res, 200, {
@@ -190,9 +153,7 @@ module.exports = function register(router) {
       helper_created_requests: helperRequests,
       successful_collections: successfulCollections,
       cancellations,
-      restaurant_offer_views: offerViews,
-      affiliate_clicks: affiliateClicks,
-      advertising_revenue_paise: revenue,
+      community_messages: communityMessages,
       open_reports: openReports
     });
   });

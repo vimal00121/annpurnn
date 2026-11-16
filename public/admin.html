@@ -56,7 +56,7 @@ async function api(method, path, body) {
 
 const SECTIONS = [
   ['analytics', '📊 Analytics'], ['users', '👥 Users'], ['requests', '🍲 Requests'],
-  ['donations', '🤲 Donations'], ['reports', '🚩 Complaints'], ['ads', '📢 Advertising'],
+  ['donations', '🤲 Donations'], ['reports', '🚩 Complaints'], ['community', '💬 Community chat'],
   ['audit', '🧾 Audit log']
 ];
 
@@ -79,8 +79,7 @@ async function show(section) {
         ['Avg fulfilment (hrs)', a.avg_fulfilment_hours], ['Active donors (30d)', a.active_donors],
         ['Repeat donors', a.repeat_donors], ['Helper-created requests', a.helper_created_requests],
         ['Successful collections', a.successful_collections], ['Cancellations', a.cancellations],
-        ['Restaurant offer views', a.restaurant_offer_views], ['Affiliate clicks', a.affiliate_clicks],
-        ['Ad revenue (₹)', (a.advertising_revenue_paise / 100).toFixed(2)], ['Open reports', a.open_reports]
+        ['Community messages', a.community_messages], ['Open reports', a.open_reports]
       ];
       c.innerHTML = `<div class="stats">${items.map(([k, v]) => `<div class="stat"><b>${esc(v)}</b>${esc(k)}</div>`).join('')}</div>`;
     } else if (section === 'users') {
@@ -114,19 +113,14 @@ async function show(section) {
           <td><button onclick="handleReport(${r.id},'reviewing')">Review</button>
           <button onclick="handleReport(${r.id},'resolved')">Resolve</button>
           <button onclick="handleReport(${r.id},'dismissed')">Dismiss</button></td></tr>`).join('')}</table>`;
-    } else if (section === 'ads') {
-      const { offers, deals, revenue } = await api('GET', '/api/admin/ads');
-      c.innerHTML = `
-        <h3>Restaurant offers (paid ads)</h3>
-        <table><tr><th>Restaurant</th><th>Area</th><th>Headline</th><th>Views</th><th>Active</th></tr>
-        ${offers.map((o) => `<tr><td>${esc(o.restaurant_name)}</td><td>${esc(o.area)}</td><td>${esc(o.headline)}</td>
-          <td>${o.views}</td><td>${o.active ? '✅' : '⛔'}</td></tr>`).join('')}</table>
-        <h3>Affiliate deals</h3>
-        <table><tr><th>Product</th><th>Sponsor</th><th>Clicks</th><th>Active</th></tr>
-        ${deals.map((d) => `<tr><td>${esc(d.product_name)}</td><td>${esc(d.sponsor)}</td><td>${d.clicks}</td>
-          <td>${d.active ? '✅' : '⛔'}</td></tr>`).join('')}</table>
-        <h3>Revenue</h3>
-        <div class="stats">${revenue.map((r) => `<div class="stat"><b>₹${(r.total_paise / 100).toFixed(2)}</b>${esc(r.source)}</div>`).join('')}</div>`;
+    } else if (section === 'community') {
+      const { messages } = await api('GET', '/api/admin/community');
+      c.innerHTML = `<h3>Community chat messages</h3>
+        <table><tr><th>#</th><th>Time</th><th>Sender</th><th>Message</th><th>Flagged</th><th>Status</th><th></th></tr>
+        ${messages.map((m) => `<tr><td>${m.id}</td><td>${esc(m.created_at)}</td><td>${esc(m.sender_name)}</td>
+          <td>${esc(m.body)}</td><td>${m.flagged ? '🚩' : ''}</td>
+          <td>${m.removed ? '🗑\uFE0F removed' : 'visible'}</td>
+          <td>${m.removed ? '' : `<button onclick="removeCommunity(${m.id})">Remove</button>`}</td></tr>`).join('')}</table>`;
     } else if (section === 'audit') {
       const { audit } = await api('GET', '/api/admin/audit');
       c.innerHTML = `<table><tr><th>Time</th><th>Actor</th><th>Action</th><th>Entity</th><th>IP</th></tr>
@@ -149,6 +143,10 @@ window.setStatus = async (id, status) => {
 window.review = async (id, safety_review) => {
   await api('PATCH', `/api/admin/donations/${id}/safety-review`, { safety_review, note: '' });
   show('donations');
+};
+window.removeCommunity = async (id) => {
+  await api('DELETE', '/api/admin/community/' + id);
+  show('community');
 };
 window.handleReport = async (id, status) => {
   await api('PATCH', '/api/admin/reports/' + id, { status, note: '' });

@@ -12,7 +12,7 @@ require('./routes/chat')(router);
 require('./routes/notifications')(router);
 require('./routes/upload')(router);
 require('./routes/admin')(router);
-require('./routes/commerce')(router);
+require('./routes/community')(router);
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 

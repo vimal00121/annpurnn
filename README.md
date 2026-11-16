@@ -11,7 +11,8 @@
 - 📱 Mobile-first web app (Android-ready: the app consumes the same REST API)
 - 🌐 English · ગુજરાતી · हिन्दी
 - 🔒 Privacy by design: no public names, faces, phones or addresses; no poverty proof
-- 💚 Free forever; commercial sections (restaurant ads, affiliate deals) are separate and always labelled
+- 💬 Community chat room where donors, seekers and helpers can talk (moderated)
+- 💚 Free forever — no ads, no sponsored sections, no charges
 
 ## Quick start
 
@@ -35,8 +36,8 @@ Seeded logins (OTP is printed to the console in dev mode): admin `+919800000009`
 | **Donor feed** | Two tabs (seekers / helper-created), filters by area, preference, people, time; report suspicious requests |
 | **Donate Food** | Full listing with allergens, storage, safe deadline; automatic food-safety screening + admin review before visibility; claim/approve matching |
 | **Trust & safety** | Phone OTP, donor & helper verification, reporting, blocking, rate limits, duplicate detection, complaints queue, audit log, analytics |
-| **Admin dashboard** | Users, verification, requests, donation safety review, complaints, ads, audit log, 14 KPIs |
-| **Commercial** | Restaurant Offers (paid ads) and Daily Deals (Amazon/Flipkart affiliate) in separate sections with clear sponsorship disclosure — never inside donation flows |
+| **Admin dashboard** | Users, verification, requests, donation safety review, complaints, community chat moderation, audit log, KPIs |
+| **Community chat** | One open, moderated chat room for donors, seekers and helpers to coordinate and talk |
 
 ## Documentation
 

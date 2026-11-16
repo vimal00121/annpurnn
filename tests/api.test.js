@@ -325,3 +325,38 @@ test('SECURITY: static traversal blocked', async () => {
   const res = await fetch(BASE + '/..%2f..%2fserver%2flib%2fconfig.js');
   assert.equal(res.status, 404);
 });
+
+test('COMMUNITY CHAT: login required, posting works, messages visible to others', async () => {
+  const anon = await call(null, 'GET', '/api/community/messages');
+  assert.equal(anon.status, 401);
+  await login('chat1', '+919955555555', ['seeker']);
+  await login('chat2', '+919966666666', ['donor']);
+  const post = await call('chat1', 'POST', '/api/community/messages', { body: 'Hello Surat! Free langar tonight at City Light.' });
+  assert.equal(post.status, 201);
+  assert.ok(post.data.id);
+  const feed = await call('chat2', 'GET', '/api/community/messages');
+  assert.equal(feed.status, 200);
+  const msg = feed.data.messages.find((m) => m.id === post.data.id);
+  assert.ok(msg, 'message should be visible to other users');
+  assert.equal(msg.sender_name, 'User chat1');
+  assert.equal(msg.mine, false);
+  // empty messages rejected
+  const empty = await call('chat2', 'POST', '/api/community/messages', { body: '   ' });
+  assert.equal(empty.status, 400);
+});
+
+test('COMMUNITY CHAT: flagged message reaches moderation queue and admin can remove', async () => {
+  await login('admin2', '+919800000009', []);
+  await call('chat1', 'POST', '/api/community/messages', { body: 'you are a scam artist' });
+  await login('admin3', '+919800000009', []);
+  const list = await call('admin3', 'GET', '/api/admin/community');
+  assert.equal(list.status, 200);
+  const flagged = list.data.messages.find((m) => m.flagged === 1);
+  assert.ok(flagged, 'abusive message should be flagged');
+  const del = await call('admin3', 'DELETE', `/api/admin/community/${flagged.id}`);
+  assert.equal(del.status, 200);
+  const nonAdmin = await call('chat2', 'DELETE', `/api/admin/community/${flagged.id}`);
+  assert.equal(nonAdmin.status, 403);
+  const feed = await call('chat2', 'GET', '/api/community/messages');
+  assert.ok(!feed.data.messages.some((m) => m.id === flagged.id), 'removed message must disappear');
+});

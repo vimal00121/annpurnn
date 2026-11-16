@@ -19,10 +19,7 @@
 | Notifications | `#/notifications` | In-app notifications with deep links |
 | Safety centre | `#/safety` | Food-safety guidance, prohibited foods, disclaimer, reporting info |
 | Food events | `#/events` | Langars, food drives |
-| Restaurant Offers* | `#/offers` | Paid ads, always labelled “Sponsored — not a food donation” |
-| Daily Deals* | `#/deals` | Affiliate links with `rel="nofollow sponsored"`, labelled |
-
-\* Commercial sections: separate routes, separate tables, separate APIs, always disclosed.
+| Community Chat | `#/community` | One open moderated room — be kind, never share address/OTP |
 
 **Bottom navigation:** Home · Requests · Donate · Safety · Me.
 **Language switcher:** EN → ગુજરાતી → हिन्दी (top bar, persisted).
@@ -36,7 +33,7 @@
 | Requests | All requests with status + helper flag |
 | Donations | Safety review pass/reject |
 | Complaints | Report queue: reviewing → resolved/dismissed |
-| Advertising | Restaurant offers + affiliate deals + revenue |
+| Community chat | Message list with flagging; remove abusive messages |
 | Audit log | Last 300 sensitive actions with actor + IP |
 
 ## Status indicators (consistent everywhere)

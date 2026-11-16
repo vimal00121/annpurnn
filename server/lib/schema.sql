@@ -206,43 +206,18 @@ CREATE TABLE IF NOT EXISTS food_events (
   status TEXT NOT NULL DEFAULT 'active'
 );
 
--- Commercial sections are in dedicated tables and dedicated APIs so they can
--- never be mixed into donation/request flows.
-CREATE TABLE IF NOT EXISTS restaurant_offers (
+-- Community chat: one open room where members can talk. Logged-in users only,
+-- rate-limited, abuse-flagged for moderation. Admins can remove messages.
+CREATE TABLE IF NOT EXISTS community_messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  restaurant_name TEXT NOT NULL,
-  area TEXT NOT NULL,
-  headline TEXT NOT NULL,
-  details TEXT,
-  image_path TEXT,
-  paid_placement INTEGER NOT NULL DEFAULT 1,
-  active INTEGER NOT NULL DEFAULT 1,
-  views INTEGER NOT NULL DEFAULT 0,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  body TEXT NOT NULL,
+  flagged INTEGER NOT NULL DEFAULT 0,
+  removed INTEGER NOT NULL DEFAULT 0,
+  removed_by INTEGER,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
-CREATE TABLE IF NOT EXISTS affiliate_deals (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  product_name TEXT NOT NULL,
-  sponsor TEXT NOT NULL,                   -- e.g. Amazon / Flipkart
-  category TEXT,
-  url TEXT NOT NULL,
-  price_text TEXT,
-  image_path TEXT,
-  sponsored INTEGER NOT NULL DEFAULT 1,
-  active INTEGER NOT NULL DEFAULT 1,
-  clicks INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE TABLE IF NOT EXISTS ad_revenue (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  source TEXT NOT NULL,                    -- restaurant|affiliate
-  ref_id INTEGER,
-  amount_paise INTEGER NOT NULL,
-  note TEXT,
-  recorded_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
+CREATE INDEX IF NOT EXISTS idx_community_messages_recent ON community_messages (removed, id);
 
 -- Product analytics (DAU/MAU, funnel events). Never contains private data.
 CREATE TABLE IF NOT EXISTS analytics_events (
