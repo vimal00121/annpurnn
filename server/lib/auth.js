@@ -22,7 +22,7 @@ function hashCode(phone, code) {
   return crypto.createHmac('sha256', config.secret).update(`${phone}:${code}`).digest('hex');
 }
 
-function issueOtp(phone, purpose = 'login', ip) {
+async function issueOtp(phone, purpose = 'login', ip) {
   if (!allow(`otp:${phone}`, 5, 15 * 60)) {
     const err = new Error('Too many OTP requests. Please wait 15 minutes.');
     err.status = 429;
@@ -34,8 +34,11 @@ function issueOtp(phone, purpose = 'login', ip) {
   db.prepare(
     `INSERT INTO otp_codes (phone, code_hash, purpose, expires_at) VALUES (?, ?, ?, ?)`
   ).run(phone, hashCode(phone, code), purpose, expires);
-  require('./otp-sender').send(phone, code);
-  return config.devOtp ? code : null;
+  await require('./otp-sender').send(phone, code);
+  // The code is only returned by the API in dev mode with no real SMS
+  // provider configured (otherwise it would leak to the client).
+  const smsLive = require('./otp-sender').providerName();
+  return config.devOtp && !smsLive ? code : null;
 }
 
 function verifyOtp(phone, code, purpose = 'login') {

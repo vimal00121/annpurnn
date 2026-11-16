@@ -100,7 +100,9 @@ views.auth = () => {
     phone = document.getElementById('phone').value.trim();
     try {
       const r = await API.post('/api/auth/otp/request', { phone });
-      document.getElementById('authErr').innerHTML = `<div class="okmsg">OTP sent${r.dev_otp ? ' (dev mode: ' + r.dev_otp + ')' : ''}</div>`;
+      document.getElementById('authErr').innerHTML = r.dev_otp
+        ? `<div class="okmsg">OTP sent ✅ Dev mode (no SMS gateway configured): your code is <b>${esc(r.dev_otp)}</b>. With a real SMS provider this code arrives by SMS instead.</div>`
+        : '<div class="okmsg">OTP sent by SMS. It is valid for 10 minutes.</div>';
       document.getElementById('otpField').hidden = false;
       document.getElementById('nameField').hidden = false;
       document.getElementById('rolesField').hidden = false;

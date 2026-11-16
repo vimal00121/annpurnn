@@ -18,6 +18,18 @@ const config = {
   otpTtlMinutes: 10,
   otpMaxAttempts: 5,
 
+  // Real SMS delivery (optional). Set ANNPURNN_SMS_PROVIDER to msg91 or
+  // twilio with the matching credentials to send OTPs by SMS.
+  sms: {
+    provider: process.env.ANNPURNN_SMS_PROVIDER || null,
+    msg91AuthKey: process.env.MSG91_AUTH_KEY || null,
+    msg91SenderId: process.env.MSG91_SENDER_ID || null,
+    msg91TemplateId: process.env.MSG91_TEMPLATE_ID || null,
+    twilioSid: process.env.TWILIO_ACCOUNT_SID || null,
+    twilioToken: process.env.TWILIO_AUTH_TOKEN || null,
+    twilioFrom: process.env.TWILIO_FROM || null
+  },
+
   // Abuse prevention defaults
   maxOpenRequestsPerUser: 3,
   duplicateWindowHours: 12,

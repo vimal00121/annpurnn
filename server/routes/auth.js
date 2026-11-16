@@ -10,6 +10,7 @@ function normalisePhone(raw) {
   const digits = String(raw || '').replace(/[^\d+]/g, '');
   if (/^\+91\d{10}$/.test(digits)) return digits;
   if (/^91\d{10}$/.test(digits)) return '+' + digits;
+  if (/^0\d{10}$/.test(digits)) return '+91' + digits.slice(1); // 0-prefixed STD format
   if (/^\d{10}$/.test(digits)) return '+91' + digits;
   throw httpError(400, 'Enter a valid 10-digit Indian mobile number.');
 }
@@ -21,7 +22,7 @@ module.exports = function register(router) {
     if (!clientIp(req) || !require('../lib/ratelimit').allow(`otpreq:${clientIp(req)}`, 10, 3600)) {
       throw httpError(429, 'Too many OTP requests from this network.');
     }
-    const devCode = issueOtp(phone, 'login', clientIp(req));
+    const devCode = await issueOtp(phone, 'login', clientIp(req));
     track(null, 'otp_requested');
     sendJson(res, 200, {
       ok: true,
